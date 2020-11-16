@@ -11,7 +11,7 @@ services:
   - docker
 env:
   global:
-    - GPC_PROJECT_ID=exam-295817
+    - GCP_PROJECT_ID=exam-295817
     - IMAGE=gcr.io/exam-295817/helloworld
     - CLOUD_RUN_SERVICE=helloservice
     - CLOUD_RUN_REGION=us-central1
