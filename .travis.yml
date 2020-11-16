@@ -25,7 +25,7 @@ before_install:
   #Download google cloud sdk and install it
   - curl https://sdk.cloud.google.com | bash > /dev/null
   #Use the encrypted file for activating google service account.
-  - gcloud auth activate-service-account --key-file=google-key.json.enc
+  - gcloud auth activate-service-account --key-file=google-key.json
   - gcloud auth configure-docker
   - gcloud config set project "${GCP_PROJECT_ID}"
   - gcloud components install beta
