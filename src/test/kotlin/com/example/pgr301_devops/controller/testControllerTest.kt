@@ -12,7 +12,7 @@ class testControllerTest: TestBase(){
 
         given().get().then()
                 .statusCode(200)
-                .body("id", equalTo("foo"))
+                .body("id", equalTo(0))
     }
 
 }

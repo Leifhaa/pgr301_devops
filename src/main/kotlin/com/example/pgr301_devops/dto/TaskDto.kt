@@ -1,6 +1,7 @@
 package com.example.pgr301_devops.dto
 
 import com.sun.istack.NotNull
+import java.time.ZonedDateTime
 import javax.persistence.GeneratedValue
 import javax.persistence.Id
 
@@ -13,4 +14,5 @@ class TaskDto(
 
         @get:NotNull
         var description: String? = null
+
 )
