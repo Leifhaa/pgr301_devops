@@ -11,6 +11,7 @@ import io.micrometer.core.instrument.MeterRegistry
 import org.springframework.stereotype.Service
 import org.tsdes.advanced.rest.dto.PageDto
 import java.util.concurrent.atomic.AtomicInteger
+import kotlin.random.Random
 
 
 @Service
@@ -56,12 +57,12 @@ class TaskService (
         repository.deleteById(id)
     }
 
-    fun updateState(id: Long, dto: TaskDto){
+    fun updateState(id: Long, state: TaskState){
         val task = repository.findById(id)
-        if (dto.state == TaskState.Open && task.get().state == dto.state){
+        if (state == TaskState.Open && task.get().state == state){
             openTasks.decrementAndGet()
         }
-        else if (dto.state == TaskState.Completed){
+        else if (state == TaskState.Completed){
             meterRegistry.counter("tasks.current", "state", TaskState.Completed.name).increment();
             //Add to rate of opened/completed tasks
             distributionSummary.StateDistributionSummary(meterRegistry).record(1.0)
@@ -81,6 +82,19 @@ class TaskService (
             page.next = "/api/tasks?keysetId=${last.id}"
         }
         return page
+    }
+
+    fun rand(start: Int, end: Int): Int {
+        require(start <= end) { "Illegal Argument" }
+        val rand = Random(System.nanoTime())
+        return (start..end).random(rand)
+    }
+
+    fun runTask(id: Long) {
+        //Simulate 'running' the task.
+        val rand = rand(2,6)
+        Thread.sleep((rand * 1000).toLong())
+        updateState(id, TaskState.Completed)
     }
 
 
