@@ -33,14 +33,10 @@ before_install:
   - gcloud auth configure-docker
   - gcloud config set project "${GCP_PROJECT_ID}"
 
-install: true #no-op
 
 #Push particular branch to remote registry after tests succeeds
 deploy:
   provider: script
-  script: bash docker_push
+  script: bash ./travis/docker_push
   on:
     branch: master
-
-script:
-
