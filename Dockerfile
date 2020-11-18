@@ -6,7 +6,8 @@ WORKDIR /app
 #Copy POM file to catalog
 COPY pom.xml .
 COPY src ./src
-RUN mvn package -DskipTests
+##Package with 1 thread per core
+RUN mvn -T 1C package -DskipTests
 
 
 

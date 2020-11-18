@@ -14,6 +14,7 @@
 11. Add configurations like "before-install and script" on travis file so it builds and pushes the docker image
 12. Create a meaningful app which has enough features to run metrics
 13. Setup the series database 'influxdb' for storing metrics
+14.
 
 
 #Assignemnt 1
