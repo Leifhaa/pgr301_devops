@@ -11,7 +11,8 @@ object DtoConverter {
                 id = task.id,
                 title = task.title,
                 description = task.description,
-                user = task.user
+                user = task.user,
+                state = task.state
         )
     }
 

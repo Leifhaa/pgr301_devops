@@ -56,12 +56,12 @@ class TaskService (
         repository.deleteById(id)
     }
 
-    fun updateState(id: Long, state: TaskState){
+    fun updateState(id: Long, dto: TaskDto){
         val task = repository.findById(id)
-        if (state == TaskState.Open && task.get().state == state){
+        if (dto.state == TaskState.Open && task.get().state == dto.state){
             openTasks.decrementAndGet()
         }
-        else if (state == TaskState.Completed){
+        else if (dto.state == TaskState.Completed){
             meterRegistry.counter("tasks.current", "state", TaskState.Completed.name).increment();
             //Add to rate of opened/completed tasks
             distributionSummary.StateDistributionSummary(meterRegistry).record(1.0)
