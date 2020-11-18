@@ -1,6 +1,7 @@
 package com.example.pgr301_devops.controller
 
 import com.example.pgr301_devops.data.Task
+import com.example.pgr301_devops.data.TaskAction
 import com.example.pgr301_devops.dto.DtoConverter
 import com.example.pgr301_devops.dto.TaskDto
 import com.example.pgr301_devops.repository.TaskRepository
@@ -23,7 +24,11 @@ import java.net.URI
 class TaskController(
         private val repository: TaskRepository,
         private val meterRegistry: MeterRegistry
-) {
+)
+{
+    val metName = "controller.task"
+
+
     @ApiOperation("Retrieves all tasks")
     @GetMapping
     fun getAll(
@@ -58,8 +63,32 @@ class TaskController(
 
         val entity = Task(title = dto.title!!, description = dto.description!!, user = dto.user)
         repository.save(entity)
-        meterRegistry.counter("controller.tasks.created", "userId", dto.user.toString()).increment();
+        meterRegistry.counter(metName, "action", TaskAction.Create.toString()).increment();
         return RestResponseFactory.created(URI.create("/api/tasks/" + entity.id))
+    }
+
+    @ApiOperation("Delete a specific task, by id")
+    @DeleteMapping(path = ["/{id}"])
+    fun deleteById(
+            @ApiParam("The id of the task")
+            @PathVariable("id")
+            pathId: String
+    ): ResponseEntity<WrappedResponse<Void>> {
+
+        val id: Long
+        try {
+            id = pathId.toLong()
+        } catch (e: Exception) {
+            return RestResponseFactory.userFailure("Invalid id")
+        }
+
+        if (!repository.existsById(id)) {
+            return RestResponseFactory.notFound("Task with id $id does not exist")
+        }
+
+        repository.deleteById(id)
+        meterRegistry.counter(metName, "action", TaskAction.Delete.toString()).increment();
+        return RestResponseFactory.noPayload(204)
     }
 
 }
