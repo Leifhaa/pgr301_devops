@@ -23,7 +23,9 @@
 ##Setting secrets:
 1. Travis needs to deploy the container image to google cloud platform. Due to this, Travis needs a service account for being permitted to push such docker image. So you'll need to retrieve a JSON key for a service account, and encrypt this file with travis by the following command:
 "travis encrypt-file google-key.json" (I had to add args --pro for pushing to travis-ci.com instead of travis-ci.org )
-
+2. The logz_io token is neccesairy so we can push logs to app.logz.io, however this token should be kept secret. Solution is to use global variable which is encrypted by travis
+so it's safe to push to git & travis can propery extract the enviroment variable LOGZ_TOKEN & LOGZ_URL. How to encrypt the token (it will also put the encrypted output in .travis.yml:
+travis encrypt MY_SECRET_ENV=super_secret --add env.global
 
 
 ##Metrics included

@@ -20,6 +20,8 @@ env:
     - CLOUD_RUN_REGION=us-central1
     #Disable cloud from asking us about input
     - CLOUDSDK_CORE_DISABLE_PROMPTS=1
+    - secure: U4QFV94vuN73OlYakHLcEuwlCJm4QYLfFz8weST0l7FJa/BL7+xWIxBSLMeuCJwBr/busPhxAh2ib/FFDoUHchQIN4lDKlwitCgkTZLqyZTYoJTWI2YtxiNloIaaXYdKjhD0vRdhgiP/bQa4mqFbfvaEqP1cuPZ1nrUbxQhD03rS876sfaLdMyP8vcZ2NJtZOuHM2baUDGDvbfObC0LJgQkbA1ZdFZvwuW8eKYHqRcdg/6AaoDjy1TnGkfz6dFl6K8preCQJP3E88EKJYYp0kc3s42ocSfaVwQeYAgdiv1syMTB73EZcaSe+WArF13GiwQbAkYhmiL+vhbFyg7lgKG/M21Y6Tvk65N0Ke1Q1TX3tmeiZ/1o4BpkCKIy54Bfjaz3XvSzqJ235bG4P7XvQUbOmt56/FuXnDe4K21wzznAjaO5lO0IIiR3iemEorX8UVmWldErfnZOEzYdVC5kTHLgRu8D0VTFbjQRtgkXBcfeEKMj2OGqENJuzbuesnSuCMicXnSWXuxNcKR1eyacr12pDmslZwVfPiuHFDUriFeNxnDRG0ONeY6ZQuO8XY1glUo655vbwMQ1eHqn+jFyvOF09S/GP9qCLutuW3KDrFa173WOqeJQUch5EDR37I1K92t42G6PHFIzbWtw9kh8Zdgn71ZW3f2H1t0ayOPQDeC8=
+
 
 before_install:
   #Google service account JSON file which is encrypted by "travis encrypt-file"
