@@ -1,5 +1,6 @@
 package com.example.pgr301_devops.service
 
+import com.example.pgr301_devops.controller.HttpMethod
 import com.example.pgr301_devops.data.Task
 import com.example.pgr301_devops.data.TaskState
 import com.example.pgr301_devops.dto.DtoConverter
@@ -18,10 +19,9 @@ class TaskService (
         private val meterRegistry: MeterRegistry
 )
 {
-    //val tmpFinished: AtomicInteger? = meterRegistry.gauge("tasks.current", AtomicInteger(0))
+
     final val openTasks: AtomicInteger = AtomicInteger()
     final val runningTasks: AtomicInteger = AtomicInteger()
-    final val finishedTasks: AtomicInteger = AtomicInteger()
 
     init{
         Gauge.builder("tasks.current", openTasks::get)
@@ -33,15 +33,8 @@ class TaskService (
                 .tag("state", TaskState.Running.name)
                 .description("How many tasks is currently running")
                 .register(meterRegistry)
-
-        /*
-        * Using a counter instead of gauge for finished tasks as it's only increasing. Gauge should not be used on something which we can use a counter on, but rather when there is a 'natural upper bound'
-        *  */
-        Counter.builder("tasks.current")
-                .tag("state", TaskState.Completed.name)
-                .description("Number of tasks finished")
-                .register(meterRegistry)
     }
+
 
     fun create(dto: TaskDto){
         val entity = Task(title = dto.title!!, description = dto.description!!, user = dto.user)
@@ -63,8 +56,11 @@ class TaskService (
 
     fun updateState(id: Long, state: TaskState){
         val task = repository.findById(id)
-        if (task.get().state == state){
+        if (state == TaskState.Open && task.get().state == state){
             openTasks.decrementAndGet()
+        }
+        else if (state == TaskState.Completed){
+            meterRegistry.counter("tasks.current", "state", TaskState.Completed.name).increment();
         }
     }
 

@@ -5,6 +5,7 @@ import com.example.pgr301_devops.dto.TaskDto
 import com.example.pgr301_devops.service.TaskService
 import io.micrometer.core.annotation.Timed
 import io.micrometer.core.aop.TimedAspect
+import io.micrometer.core.instrument.DistributionSummary
 import io.micrometer.core.instrument.MeterRegistry
 import io.swagger.annotations.Api
 import io.swagger.annotations.ApiOperation
@@ -34,6 +35,8 @@ class TaskController(
     fun timedAspect(registry: MeterRegistry): TimedAspect? {
         return TimedAspect(registry)
     }
+
+
 
 
     @Timed(description= "Time spent resolving http request", value = "http.requests.timer")
