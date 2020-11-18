@@ -39,4 +39,4 @@ deploy:
   provider: script
   script: bash ./travis/docker_push
   on:
-    branch: master
+    branch: main
