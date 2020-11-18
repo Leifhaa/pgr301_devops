@@ -1,15 +1,15 @@
 package com.example.pgr301_devops.controller
 
-import com.example.pgr301_devops.data.TaskState
 import com.example.pgr301_devops.dto.TaskDto
 import com.example.pgr301_devops.service.TaskService
 import io.micrometer.core.annotation.Timed
 import io.micrometer.core.aop.TimedAspect
-import io.micrometer.core.instrument.DistributionSummary
 import io.micrometer.core.instrument.MeterRegistry
 import io.swagger.annotations.Api
 import io.swagger.annotations.ApiOperation
 import io.swagger.annotations.ApiParam
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import org.springframework.context.annotation.Bean
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
@@ -30,6 +30,8 @@ class TaskController(
 {
     val uri = "/api/tasks"
     val metName = "http.requests"
+    var logger: Logger = LoggerFactory.getLogger(TaskController::class.java)
+
 
     @Bean
     fun timedAspect(registry: MeterRegistry): TimedAspect? {
@@ -61,6 +63,7 @@ class TaskController(
         }
 
         service.create(dto)
+        logger.info("A new task was created!")
         return RestResponseFactory.created(URI.create(uri + dto.id))
     }
 

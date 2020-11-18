@@ -14,7 +14,8 @@
 11. Add configurations like "before-install and script" on travis file so it builds and pushes the docker image
 12. Create a meaningful app which has enough features to run metrics
 13. Setup the series database 'influxdb' for storing metrics
-14.
+14. Setup metrics in the program and query them in influxDB (http://localhost:8083/)
+15. Add the ELK stack
 
 
 #Assignemnt 1
@@ -27,7 +28,6 @@
 ##Metrics included
 todo: Add the metrics and short description
 1. DistributionSummary - For viewing how many tasks has been completed or opened
-
 
 
 
