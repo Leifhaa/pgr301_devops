@@ -50,7 +50,7 @@ class TaskControllerTest {
         given().accept(ContentType.JSON)
                 .get()
                 .then()
-                .statusCode(200)
+                .statusCode(201)
     }
 
 }
