@@ -16,6 +16,7 @@
 13. Setup the series database 'influxdb' for storing metrics
 14. Setup metrics in the program and query them in influxDB (http://localhost:8083/)
 15. Add the ELK stack
+16. Encrypt logz_io token
 
 
 #Assignemnt 1
