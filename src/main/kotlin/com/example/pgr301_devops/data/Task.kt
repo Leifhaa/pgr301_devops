@@ -21,6 +21,9 @@ class Task(
         var description: String? = null,
 
         @get:NotNull
-        var user: Long? = null
+        var user: Long? = null,
+
+        @get:NotNull
+        var state: TaskState? = TaskState.Open
 
 )

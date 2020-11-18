@@ -1,10 +1,9 @@
 package com.example.pgr301_devops.controller
 
-import com.example.pgr301_devops.data.Task
-import com.example.pgr301_devops.data.TaskAction
+import com.example.pgr301_devops.data.TaskState
 import com.example.pgr301_devops.dto.DtoConverter
 import com.example.pgr301_devops.dto.TaskDto
-import com.example.pgr301_devops.repository.TaskRepository
+import com.example.pgr301_devops.service.TaskService
 import io.micrometer.core.instrument.MeterRegistry
 import io.swagger.annotations.Api
 import io.swagger.annotations.ApiOperation
@@ -22,30 +21,19 @@ import java.net.URI
 @RequestMapping(path = ["/api/tasks"], produces = [MediaType.APPLICATION_JSON_UTF8_VALUE])
 @RestController
 class TaskController(
-        private val repository: TaskRepository,
+        private val service: TaskService,
         private val meterRegistry: MeterRegistry
 )
 {
-    val metName = "controller.task"
-
-
+    val uri = "/api/tasks"
+    val metName = "http.requests"
     @ApiOperation("Retrieves all tasks")
     @GetMapping
     fun getAll(
             @RequestParam("keysetId", required = false)
             keysetId: Long?
     ): ResponseEntity<WrappedResponse<PageDto<TaskDto>>>{
-        val page = PageDto<TaskDto>()
-
-        //Page size
-        val n = 5;
-        val tasks = DtoConverter.transform(repository.getNextPage(n, keysetId))
-        page.list = tasks
-
-        if (tasks.size == n){
-            val last = tasks.last()
-            page.next = "/api/tasks?keysetId=${last.id}"
-        }
+        val page = service.get(keysetId)
         return RestResponseFactory.payload(200, page)
     }
 
@@ -56,15 +44,36 @@ class TaskController(
             @RequestBody
             dto: TaskDto
     ): ResponseEntity<WrappedResponse<Void>> {
-
+        meterRegistry.counter(metName, "uri", uri, "method", HttpMethod.POST.toString()).increment();
         if (dto.id != null) {
             return RestResponseFactory.userFailure("Cannot specify an id when creating a new task")
         }
 
-        val entity = Task(title = dto.title!!, description = dto.description!!, user = dto.user)
-        repository.save(entity)
-        meterRegistry.counter(metName, "action", TaskAction.Create.toString()).increment();
-        return RestResponseFactory.created(URI.create("/api/tasks/" + entity.id))
+        service.create(dto)
+        return RestResponseFactory.created(URI.create(uri + dto.id))
+    }
+
+    @ApiOperation("Updates a task state")
+    @PostMapping(path = ["/{id}/state/{state}"],consumes = [MediaType.APPLICATION_JSON_UTF8_VALUE])
+    fun create(
+            @ApiParam("The id of the task")
+            @PathVariable("id")
+            taskId: String,
+            @ApiParam("State id of task")
+            @RequestParam
+            taskstate: TaskState
+    ): ResponseEntity<WrappedResponse<Void>> {
+        meterRegistry.counter(metName, "uri", uri, "method", HttpMethod.POST.toString()).increment();
+
+        val id: Long
+        try {
+            id = taskId.toLong()
+        } catch (e: Exception) {
+            return RestResponseFactory.userFailure("Invalid id")
+        }
+
+        service.updateState(id, taskstate)
+        return RestResponseFactory.noPayload(200)
     }
 
     @ApiOperation("Delete a specific task, by id")
@@ -74,7 +83,7 @@ class TaskController(
             @PathVariable("id")
             pathId: String
     ): ResponseEntity<WrappedResponse<Void>> {
-
+        meterRegistry.counter(metName, "uri", uri, "method", HttpMethod.DELETE.toString()).increment();
         val id: Long
         try {
             id = pathId.toLong()
@@ -82,13 +91,13 @@ class TaskController(
             return RestResponseFactory.userFailure("Invalid id")
         }
 
-        if (!repository.existsById(id)) {
+        if (!service.exists(id)) {
             return RestResponseFactory.notFound("Task with id $id does not exist")
         }
 
-        repository.deleteById(id)
-        meterRegistry.counter(metName, "action", TaskAction.Delete.toString()).increment();
+        service.delete(id)
         return RestResponseFactory.noPayload(204)
     }
+
 
 }
