@@ -7,8 +7,11 @@ cache:
     - ".autoconf"
     - "$HOME/.m2"
 
+#Enable travis to use docker
 services:
   - docker
+
+#Set env variables.
 env:
   global:
     - GCP_PROJECT_ID=exam-295817
@@ -32,9 +35,12 @@ before_install:
 
 install: true #no-op
 
+#Push particular branch to remote registry after tests succeeds
+deploy:
+  provider: script
+  script: bash docker_push
+  on:
+    branch: master
+
 script:
-  - |-
-    set -ex;
-    docker build -t "${IMAGE}:${TRAVIS_COMMIT}" -t "${IMAGE}:latest" . && \
-    docker push "${IMAGE}" && \
-    set +x
+
