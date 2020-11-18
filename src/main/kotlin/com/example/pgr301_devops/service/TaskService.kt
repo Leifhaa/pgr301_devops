@@ -1,22 +1,23 @@
 package com.example.pgr301_devops.service
 
-import com.example.pgr301_devops.controller.HttpMethod
 import com.example.pgr301_devops.data.Task
 import com.example.pgr301_devops.data.TaskState
 import com.example.pgr301_devops.dto.DtoConverter
 import com.example.pgr301_devops.dto.TaskDto
+import com.example.pgr301_devops.metrics.TaskDistributionSummary
 import com.example.pgr301_devops.repository.TaskRepository
-import io.micrometer.core.instrument.Counter
 import io.micrometer.core.instrument.Gauge
 import io.micrometer.core.instrument.MeterRegistry
 import org.springframework.stereotype.Service
 import org.tsdes.advanced.rest.dto.PageDto
 import java.util.concurrent.atomic.AtomicInteger
 
+
 @Service
 class TaskService (
         private val repository: TaskRepository,
-        private val meterRegistry: MeterRegistry
+        private val meterRegistry: MeterRegistry,
+        private val distributionSummary: TaskDistributionSummary
 )
 {
 
@@ -35,10 +36,11 @@ class TaskService (
                 .register(meterRegistry)
     }
 
-
     fun create(dto: TaskDto){
         val entity = Task(title = dto.title!!, description = dto.description!!, user = dto.user)
         openTasks.incrementAndGet()
+        //Add to rate of opened/completed tasks
+        distributionSummary.StateDistributionSummary(meterRegistry).record(0.0)
         repository.save(entity)
     }
 
@@ -61,6 +63,8 @@ class TaskService (
         }
         else if (state == TaskState.Completed){
             meterRegistry.counter("tasks.current", "state", TaskState.Completed.name).increment();
+            //Add to rate of opened/completed tasks
+            distributionSummary.StateDistributionSummary(meterRegistry).record(1.0)
         }
     }
 

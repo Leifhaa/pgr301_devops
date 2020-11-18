@@ -69,25 +69,31 @@ class TaskController(
 
     @Timed(description= "Time spent resolving http request", value = "http.requests.timer")
     @ApiOperation("Updates a task state")
-    @PostMapping(path = ["/{id}/state/{state}"],consumes = [MediaType.APPLICATION_JSON_UTF8_VALUE])
+    @PostMapping(path = ["/{id}/state/{state}"])
     fun create(
             @ApiParam("The id of the task")
             @PathVariable("id")
             taskId: String,
             @ApiParam("State id of task")
-            @RequestParam
-            taskstate: TaskState
+            @PathVariable("state")
+            state: String
     ): ResponseEntity<WrappedResponse<Void>> {
         meterRegistry.counter(metName, "uri", uri, "method", HttpMethod.POST.toString()).increment();
-
         val id: Long
+        val enumstate: TaskState
         try {
             id = taskId.toLong()
         } catch (e: Exception) {
             return RestResponseFactory.userFailure("Invalid id")
         }
+        try{
+            enumstate = TaskState.valueOf(state)
+        }catch (e: Exception){
+            return RestResponseFactory.userFailure("Invalid state id")
+        }
 
-        service.updateState(id, taskstate)
+
+        service.updateState(id, enumstate)
         return RestResponseFactory.noPayload(200)
     }
 
