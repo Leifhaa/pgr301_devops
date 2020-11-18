@@ -1,13 +1,15 @@
 package com.example.pgr301_devops.controller
 
 import com.example.pgr301_devops.data.TaskState
-import com.example.pgr301_devops.dto.DtoConverter
 import com.example.pgr301_devops.dto.TaskDto
 import com.example.pgr301_devops.service.TaskService
+import io.micrometer.core.annotation.Timed
+import io.micrometer.core.aop.TimedAspect
 import io.micrometer.core.instrument.MeterRegistry
 import io.swagger.annotations.Api
 import io.swagger.annotations.ApiOperation
 import io.swagger.annotations.ApiParam
+import org.springframework.context.annotation.Bean
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
@@ -27,6 +29,14 @@ class TaskController(
 {
     val uri = "/api/tasks"
     val metName = "http.requests"
+
+    @Bean
+    fun timedAspect(registry: MeterRegistry): TimedAspect? {
+        return TimedAspect(registry)
+    }
+
+
+    @Timed(description= "Time spent resolving http request", value = "http.requests.timer")
     @ApiOperation("Retrieves all tasks")
     @GetMapping
     fun getAll(
@@ -37,6 +47,7 @@ class TaskController(
         return RestResponseFactory.payload(200, page)
     }
 
+    @Timed(description= "Time spent resolving http request", value = "http.requests.timer")
     @ApiOperation("Create a new task")
     @PostMapping(consumes = [MediaType.APPLICATION_JSON_UTF8_VALUE])
     fun create(
@@ -53,6 +64,7 @@ class TaskController(
         return RestResponseFactory.created(URI.create(uri + dto.id))
     }
 
+    @Timed(description= "Time spent resolving http request", value = "http.requests.timer")
     @ApiOperation("Updates a task state")
     @PostMapping(path = ["/{id}/state/{state}"],consumes = [MediaType.APPLICATION_JSON_UTF8_VALUE])
     fun create(
@@ -76,6 +88,7 @@ class TaskController(
         return RestResponseFactory.noPayload(200)
     }
 
+    @Timed(description= "Time spent resolving http request", value = "http.requests.timer")
     @ApiOperation("Delete a specific task, by id")
     @DeleteMapping(path = ["/{id}"])
     fun deleteById(
@@ -98,6 +111,4 @@ class TaskController(
         service.delete(id)
         return RestResponseFactory.noPayload(204)
     }
-
-
 }
