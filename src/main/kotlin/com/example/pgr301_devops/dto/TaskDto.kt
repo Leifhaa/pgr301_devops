@@ -13,6 +13,9 @@ class TaskDto(
         var title: String? = null,
 
         @get:NotNull
-        var description: String? = null
+        var description: String? = null,
+
+        @get:NotNull
+        var user: Long? = null
 
 )

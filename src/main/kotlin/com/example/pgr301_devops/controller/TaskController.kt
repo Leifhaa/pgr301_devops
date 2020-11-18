@@ -56,10 +56,9 @@ class TaskController(
             return RestResponseFactory.userFailure("Cannot specify an id when creating a new task")
         }
 
-        //service.priveledge.findByName
-        val entity = Task(title = dto.title!!, description = dto.description!!)
+        val entity = Task(title = dto.title!!, description = dto.description!!, user = dto.user)
         repository.save(entity)
-        meterRegistry.counter("controller.", "task", "123").increment();
+        meterRegistry.counter("controller.tasks.created", "userId", dto.user.toString()).increment();
         return RestResponseFactory.created(URI.create("/api/tasks/" + entity.id))
     }
 

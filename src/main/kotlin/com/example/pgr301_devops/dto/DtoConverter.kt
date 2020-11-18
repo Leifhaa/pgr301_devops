@@ -10,7 +10,8 @@ object DtoConverter {
         return TaskDto(
                 id = task.id,
                 title = task.title,
-                description = task.description
+                description = task.description,
+                user = task.user
         )
     }
 
