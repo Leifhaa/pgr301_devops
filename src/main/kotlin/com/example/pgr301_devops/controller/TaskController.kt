@@ -84,7 +84,7 @@ class TaskController(
             return RestResponseFactory.userFailure("Invalid id")
         }
 
-        service.updateState(id, dto)
+        service.updateState(id, dto.state!!)
         return RestResponseFactory.noPayload(200)
     }
 
