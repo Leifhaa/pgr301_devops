@@ -36,7 +36,6 @@ class TaskController(
         return TimedAspect(registry)
     }
 
-
     @Timed(description= "Time spent resolving http request", value = "http.requests.timer")
     @ApiOperation("Retrieves all tasks")
     @GetMapping
@@ -112,23 +111,4 @@ class TaskController(
         return RestResponseFactory.noPayload(204)
     }
 
-    //@Timed(description= "Time spent resolving http request", value = "http.requests.timer")
-    @ApiOperation("Simulates running a task")
-    @PostMapping(path = ["/{id}"])
-    fun run(
-            @ApiParam("The id of the task")
-            @PathVariable("id")
-            taskId: String
-    ): ResponseEntity<WrappedResponse<Void>> {
-        val id: Long
-        try {
-            id = taskId.toLong()
-        } catch (e: Exception) {
-            return RestResponseFactory.userFailure("Invalid id")
-        }
-
-
-        service.runTask(id)
-        return RestResponseFactory.noPayload(200)
-    }
 }

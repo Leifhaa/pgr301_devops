@@ -24,6 +24,9 @@
 
 
 
+##Metrics included
+todo: Add the metrics and short description
+1. DistributionSummary - For viewing how many tasks has been completed or opened
 
 
 

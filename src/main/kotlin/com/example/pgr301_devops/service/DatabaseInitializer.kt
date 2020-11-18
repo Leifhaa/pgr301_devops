@@ -15,6 +15,7 @@ class DatabaseInitializer(
     @PostConstruct
     fun initialize(){
         repository.run {
+            /*
             deleteAll()
             save(Task(0, "Process data", "Process data from incoming request", 0))
             save(Task(1, "Write data", "Write data from incoming request", 0))
@@ -23,6 +24,7 @@ class DatabaseInitializer(
             save(Task(4, "Send invoices", "Sends invoices", 0))
             save(Task(5, "Retrieve customer information", "Retrieve all customer information from all customers", 1))
             save(Task(6, "Run sales report", "Prints a sales report for a team", 1))
+             */
         }
     }
 }

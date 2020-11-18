@@ -8,10 +8,12 @@ import com.example.pgr301_devops.metrics.TaskDistributionSummary
 import com.example.pgr301_devops.repository.TaskRepository
 import io.micrometer.core.instrument.Gauge
 import io.micrometer.core.instrument.MeterRegistry
+import org.springframework.scheduling.annotation.Async
 import org.springframework.stereotype.Service
 import org.tsdes.advanced.rest.dto.PageDto
+import java.time.ZonedDateTime
 import java.util.concurrent.atomic.AtomicInteger
-import kotlin.random.Random
+
 
 
 @Service
@@ -38,7 +40,7 @@ class TaskService (
     }
 
     fun create(dto: TaskDto){
-        val entity = Task(title = dto.title!!, description = dto.description!!, user = dto.user)
+        val entity = Task(title = dto.title!!, description = dto.description!!, user = dto.user, creationTime = ZonedDateTime.now())
         openTasks.incrementAndGet()
         //Add to rate of opened/completed tasks
         distributionSummary.StateDistributionSummary(meterRegistry).record(0.0)
@@ -82,19 +84,6 @@ class TaskService (
             page.next = "/api/tasks?keysetId=${last.id}"
         }
         return page
-    }
-
-    fun rand(start: Int, end: Int): Int {
-        require(start <= end) { "Illegal Argument" }
-        val rand = Random(System.nanoTime())
-        return (start..end).random(rand)
-    }
-
-    fun runTask(id: Long) {
-        //Simulate 'running' the task.
-        val rand = rand(2,6)
-        Thread.sleep((rand * 1000).toLong())
-        updateState(id, TaskState.Completed)
     }
 
 

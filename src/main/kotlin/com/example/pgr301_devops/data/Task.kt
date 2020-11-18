@@ -1,6 +1,6 @@
 package com.example.pgr301_devops.data
 
-import org.springframework.boot.autoconfigure.domain.EntityScan
+
 import java.time.ZonedDateTime
 import javax.persistence.Entity
 import javax.persistence.GeneratedValue
@@ -24,6 +24,10 @@ class Task(
         var user: Long? = null,
 
         @get:NotNull
-        var state: TaskState? = TaskState.Open
+        var state: TaskState? = TaskState.Open,
+
+        @get:NotNull
+        var creationTime: ZonedDateTime? = null
+
 
 )

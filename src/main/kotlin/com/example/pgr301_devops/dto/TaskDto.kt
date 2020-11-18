@@ -20,6 +20,9 @@ class TaskDto(
         var user: Long? = null,
 
         @get:NotNull
-        var state: TaskState? = null
+        var state: TaskState? = null,
+
+        @get:NotNull
+        var creationTime: ZonedDateTime? = null
 
 )

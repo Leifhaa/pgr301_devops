@@ -1,15 +1,19 @@
 package com.example.pgr301_devops.repository
 
 import com.example.pgr301_devops.data.Task
+import com.example.pgr301_devops.data.TaskState
 import org.springframework.data.repository.CrudRepository
 import org.springframework.stereotype.Repository
 import java.lang.IllegalArgumentException
+import java.time.ZonedDateTime
 import javax.persistence.EntityManager
 import javax.persistence.TypedQuery
 import javax.transaction.Transactional
 
 @Repository
-interface TaskRepository: CrudRepository<Task, Long>, KeysetPageRepo
+interface TaskRepository: CrudRepository<Task, Long>, KeysetPageRepo{
+    fun deleteAllByCreationTimeBeforeAndState(time: ZonedDateTime, state: TaskState)
+}
 
 @Transactional
 @Repository
