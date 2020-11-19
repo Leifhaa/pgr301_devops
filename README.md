@@ -20,6 +20,8 @@
 17. Add logging
 18. Create a bucket for terraform state
 19. Create a service account for terraform
+20. Create a seperate repository for terraform
+
 
 
 #Assignemnt 1
