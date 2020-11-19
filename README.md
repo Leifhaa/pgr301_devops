@@ -17,6 +17,9 @@
 14. Setup metrics in the program and query them in influxDB (http://localhost:8083/)
 15. Add the ELK stack
 16. Encrypt logz_io token
+17. Add logging
+18. Create a bucket for terraform state
+19. Create a service account for terraform
 
 
 #Assignemnt 1
