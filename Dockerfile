@@ -17,7 +17,8 @@ RUN mvn -T 1C package -DskipTests
 # https://hub.docker.com/r/adoptopenjdk/openjdk8
 # https://docs.docker.com/develop/develop-images/multistage-build/#use-multi-stage-builds
 FROM adoptopenjdk/openjdk11:alpine-slim
+WORKDIR /app
 #Copy the .JAR file(s) from catalog to our container
-COPY --from=builder /app/target/*.jar /app/application.jar
+COPY --from=builder /app/target/*.jar application.jar
 ENTRYPOINT ["java", "-jar", "application.jar"]
 
