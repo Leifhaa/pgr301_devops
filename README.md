@@ -82,6 +82,7 @@ docker run -p 8081:8080 helloworld
 - Useful guide for making more benas for monitoring: https://dimitr.im/mastering-spring-boot-actuator#distribution-summaries
 - Make a counter of tasks opened
 - Make a counter of tasks completed
+- Get statuscake keys from google cloud secrets
 
 
 
