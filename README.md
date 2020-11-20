@@ -3,7 +3,7 @@
  ## Table of contents
  * [General](#general)
  * [Assignments](#assigments)
-    * [1.Docker](#1docker)
+    * [1.Docker](#1-docker)
  * [Architecture ](#)
  * [Technologies]
  * [Assigment 1 Docker](#assignment-1-docker)
@@ -15,9 +15,12 @@
  
  This repository consists of an application which exposes a REST api for creating, viewing and tasks which is stored in a in-memory database. The functionalities are limited, but attempts to show good dev-ops guidelines such as [the twelve-factor app](https://12factor.net/ "12 factor app") and devops-techniques such as multistage building by travis.
  
- ##Assigments
+ ## Assigments
  
-### 1.Docker
+### 1. Docker
+The project consists of a .travis.yml which allows travis to create a docker image every time there's a commit to Master Branch. If the tests are successful, the docker image is build (using Dockerfile) and deployed by docker_push script.
+
+
 
 #How did I solve the task:
 1. Make a barebone simple project
