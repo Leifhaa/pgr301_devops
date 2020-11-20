@@ -1,9 +1,9 @@
 #TasksManager - a program for task management.
 
  ## Table of contents
- *[Architecture ](#)
- *[Technologies]
- *[Assigment 1 - Docker] (#Assignment-1---docker)
+ * [Architecture ](#)
+ * [Technologies]
+ * [Assigment 1 - Docker] (#Assignment-1---docker)
  
  
 ##Assigment 1 - Docker
