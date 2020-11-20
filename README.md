@@ -1,12 +1,23 @@
-#TasksManager - a program for task management.
+#TasksManager - A program for task management.
 
  ## Table of contents
+ * [General](#general)
+ * [Assignments](#assigments)
+    * [1.Docker](#1docker)
  * [Architecture ](#)
  * [Technologies]
- * [Assigment 1 - Docker] (#Assignment-1---docker)
+ * [Assigment 1 Docker](#assignment-1-docker)
  
+ ## General
+ This repository is 1 out of total 2 repositories for exam in class PGR-301 at Høyskolen Kristiania.
+ The second repository can be found here:
+ * https://github.com/Leifhaa/pgr301_devops_infrastructure.
  
-##Assigment 1 - Docker
+ This repository consists of an application which exposes a REST api for creating, viewing and tasks which is stored in a in-memory database. The functionalities are limited, but attempts to show good dev-ops guidelines such as [the twelve-factor app](https://12factor.net/ "12 factor app") and devops-techniques such as multistage building by travis.
+ 
+ ##Assigments
+ 
+### 1.Docker
 
 #How did I solve the task:
 1. Make a barebone simple project
@@ -64,4 +75,6 @@ docker run -p 8081:8080 helloworld
 - Add travis test status in github readme.
 - Todo: Make my own metrics
 - Useful guide for making more benas for monitoring: https://dimitr.im/mastering-spring-boot-actuator#distribution-summaries
+- Make a counter of tasks opened
+- Make a counter of tasks completed
 
