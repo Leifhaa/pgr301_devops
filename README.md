@@ -21,6 +21,9 @@
 The project consists of a .travis.yml which allows travis to create a docker image every time there's a commit to Master Branch. If the tests are successful, the docker image is build (using Dockerfile) and deployed by docker_push script to GCP.
 
 
+## Pipeline
+![The build pipeline](https://github.com/Leifhaa/[reponame]/blob/pgr301_devops/docs/pipeline.png?raw=true)
+
 #How did I solve the task:
 1. Make a barebone simple project
 2. Push to git
@@ -79,4 +82,6 @@ docker run -p 8081:8080 helloworld
 - Useful guide for making more benas for monitoring: https://dimitr.im/mastering-spring-boot-actuator#distribution-summaries
 - Make a counter of tasks opened
 - Make a counter of tasks completed
+
+
 
