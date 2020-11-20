@@ -18,7 +18,7 @@
  ## Assigments
  
 ### 1. Docker
-The project consists of a .travis.yml which allows travis to create a docker image every time there's a commit to Master Branch. If the tests are successful, the docker image is build (using Dockerfile) and deployed by docker_push script.
+The project consists of a .travis.yml which allows travis to create a docker image every time there's a commit to Master Branch. If the tests are successful, the docker image is build (using Dockerfile) and deployed by docker_push script to GCP.
 
 
 
