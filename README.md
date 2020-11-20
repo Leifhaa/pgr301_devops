@@ -22,7 +22,7 @@ The project consists of a .travis.yml which allows travis to create a docker ima
 
 
 ## Pipeline
-![The build pipeline](https://github.com/Leifhaa/[reponame]/blob/pgr301_devops/docs/pipeline.png?raw=true)
+![The build pipeline](https://github.com/Leifhaa/pgr301_devops/blob/pgr301_devops/docs/pipeline.png?raw=true)
 
 #How did I solve the task:
 1. Make a barebone simple project
