@@ -1,7 +1,7 @@
 package com.example.pgr301_devops.service
 
-import com.example.pgr301_devops.data.Task
-import com.example.pgr301_devops.data.TaskState
+import com.example.pgr301_devops.model.Task
+import com.example.pgr301_devops.model.TaskState
 import com.example.pgr301_devops.dto.DtoConverter
 import com.example.pgr301_devops.dto.TaskDto
 import com.example.pgr301_devops.metrics.TaskDistributionSummary
@@ -12,64 +12,52 @@ import org.springframework.scheduling.annotation.Async
 import org.springframework.stereotype.Service
 import org.tsdes.advanced.rest.dto.PageDto
 import java.time.ZonedDateTime
+import java.util.*
 import java.util.concurrent.atomic.AtomicInteger
-
+import java.lang.instrument.Instrumentation;
 
 
 @Service
 class TaskService (
         private val repository: TaskRepository,
         private val meterRegistry: MeterRegistry,
-        private val distributionSummary: TaskDistributionSummary
-)
+        private val distributionSummary: TaskDistributionSummary)
 {
 
-    final val openTasks: AtomicInteger = AtomicInteger()
-    final val runningTasks: AtomicInteger = AtomicInteger()
+    /**
+     * How many tasks is currently running
+     */
+    final val running: AtomicInteger = AtomicInteger()
 
     init{
-        Gauge.builder("tasks.current", openTasks::get)
-                .tag("state", TaskState.Open.name)
-                .description("How many tasks is currently open")
-                .register(meterRegistry)
-
-        Gauge.builder("tasks.current", runningTasks::get)
+        Gauge.builder("tasks.current", running::get)
                 .tag("state", TaskState.Running.name)
                 .description("How many tasks is currently running")
                 .register(meterRegistry)
     }
 
-    fun create(dto: TaskDto){
-        val entity = Task(title = dto.title!!, description = dto.description!!, user = dto.user, creationTime = ZonedDateTime.now())
-        openTasks.incrementAndGet()
-        //Add to rate of opened/completed tasks
-        distributionSummary.StateDistributionSummary(meterRegistry).record(0.0)
-        repository.save(entity)
+    fun create(dto: TaskDto) : Task{
+        val task = Task(title = dto.title!!, description = dto.description!!, user = dto.user, creationTime = ZonedDateTime.now())
+        meterRegistry.counter("tasks.current", "state", TaskState.Created.name).increment()
+        repository.save(task)
+        return task
     }
 
     fun exists(id: Long) : Boolean{
         return repository.existsById(id)
     }
 
-    fun delete(id: Long) {
-        val task = repository.findById(id)
-        if (task.get().state == TaskState.Open){
-            openTasks.decrementAndGet()
-        }
-        repository.deleteById(id)
+    fun findById(id: Long) : Optional<Task> {
+        return repository.findById(id)
     }
 
-    fun updateState(id: Long, state: TaskState){
+    fun delete(id: Long) {
         val task = repository.findById(id)
-        if (state == TaskState.Open && task.get().state == state){
-            openTasks.decrementAndGet()
-        }
-        else if (state == TaskState.Completed){
-            meterRegistry.counter("tasks.current", "state", TaskState.Completed.name).increment();
-            //Add to rate of opened/completed tasks
-            distributionSummary.StateDistributionSummary(meterRegistry).record(1.0)
+        if (task.isPresent){
+            repository.deleteById(id)
         }
     }
+
 
     fun get(keysetId: Long?) : PageDto<TaskDto> {
         val page = PageDto<TaskDto>()
@@ -86,6 +74,26 @@ class TaskService (
         return page
     }
 
+    @Async
+    fun runTask(task: Task) {
+        running.incrementAndGet()
 
-    //Todo: Implement database calls counter
+        //Simulate a computation
+        val randTime = (5..15).random()
+        Thread.sleep( randTime.toLong() * 10000)
+        task.state = TaskState.Completed
+
+        //Calculate the price for computation of the task (our business is charging per millisecond running a task)
+        val price = randTime * 0.00015
+        task.price = price
+
+        //Save the money made into metrics
+        distributionSummary.StateDistributionSummary(meterRegistry).record(price)
+
+
+        repository.save(task)
+
+        running.decrementAndGet()
+        meterRegistry.counter("tasks.current", "state", TaskState.Completed.name).increment();
+    }
 }

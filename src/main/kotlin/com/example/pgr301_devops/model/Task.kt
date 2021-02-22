@@ -1,4 +1,4 @@
-package com.example.pgr301_devops.data
+package com.example.pgr301_devops.model
 
 
 import java.time.ZonedDateTime
@@ -24,10 +24,11 @@ class Task(
         var user: Long? = null,
 
         @get:NotNull
-        var state: TaskState? = TaskState.Open,
+        var state: TaskState? = TaskState.Created,
+
+        @get:NotNull
+        var price: Double? = null,
 
         @get:NotNull
         var creationTime: ZonedDateTime? = null
-
-
 )

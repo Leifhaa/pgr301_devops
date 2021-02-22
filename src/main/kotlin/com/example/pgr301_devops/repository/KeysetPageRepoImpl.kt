@@ -1,7 +1,7 @@
 package com.example.pgr301_devops.repository
 
-import com.example.pgr301_devops.data.Task
-import com.example.pgr301_devops.data.TaskState
+import com.example.pgr301_devops.model.Task
+import com.example.pgr301_devops.model.TaskState
 import org.springframework.data.repository.CrudRepository
 import org.springframework.stereotype.Repository
 import java.lang.IllegalArgumentException

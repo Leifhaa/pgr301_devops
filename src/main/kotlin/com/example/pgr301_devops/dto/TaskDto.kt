@@ -1,9 +1,8 @@
 package com.example.pgr301_devops.dto
 
-import com.example.pgr301_devops.data.TaskState
+import com.example.pgr301_devops.model.TaskState
 import com.sun.istack.NotNull
 import java.time.ZonedDateTime
-import javax.persistence.GeneratedValue
 import javax.persistence.Id
 
 class TaskDto(
@@ -21,6 +20,9 @@ class TaskDto(
 
         @get:NotNull
         var state: TaskState? = null,
+
+        @get:NotNull
+        var price: Double? = null,
 
         @get:NotNull
         var creationTime: ZonedDateTime? = null

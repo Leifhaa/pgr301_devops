@@ -1,6 +1,7 @@
 package com.example.pgr301_devops.controller
 
 import com.example.pgr301_devops.dto.TaskDto
+import com.example.pgr301_devops.model.TaskState
 import com.example.pgr301_devops.service.TaskService
 import io.micrometer.core.annotation.Timed
 import io.micrometer.core.aop.TimedAspect
@@ -52,7 +53,7 @@ class TaskController(
     @Timed(description= "Time spent resolving http request", value = "http.requests.timer")
     @ApiOperation("Create a new task")
     @PostMapping(consumes = [MediaType.APPLICATION_JSON_UTF8_VALUE])
-    fun create(
+    fun run(
             @ApiParam("Data for new task")
             @RequestBody
             dto: TaskDto
@@ -62,21 +63,18 @@ class TaskController(
             return RestResponseFactory.userFailure("Cannot specify an id when creating a new task")
         }
 
-        service.create(dto)
+        val dbTask = service.create(dto)
         logger.info("A new task was created!")
-        return RestResponseFactory.created(URI.create(uri + dto.id))
+        return RestResponseFactory.created(URI.create("${uri}/${dbTask.id}"))
     }
 
     @Timed(description= "Time spent resolving http request", value = "http.requests.timer")
-    @ApiOperation("Updates a task state")
-    @PatchMapping(path = ["/{id}"])
-    fun create(
+    @ApiOperation("Executes a task")
+    @PostMapping(path = ["/{id}/run"])
+    fun run(
             @ApiParam("The id of the task")
             @PathVariable("id")
-            taskId: String,
-            @ApiParam("New data of task")
-            @RequestBody
-            dto: TaskDto
+            taskId: String
     ): ResponseEntity<WrappedResponse<Void>> {
         meterRegistry.counter(metName, "uri", uri, "method", HttpMethod.POST.toString()).increment();
         val id: Long
@@ -86,7 +84,19 @@ class TaskController(
             return RestResponseFactory.userFailure("Invalid id")
         }
 
-        service.updateState(id, dto.state!!)
+        val optional = service.findById(id);
+        if (optional.isEmpty){
+            return RestResponseFactory.notFound("Task not found")
+        }
+        val task = optional.get()
+        if (task.state == TaskState.Running){
+            return RestResponseFactory.userFailure("Task already running")
+        }
+        if (task.state == TaskState.Completed){
+            return RestResponseFactory.userFailure("Task is completed")
+        }
+        service.runTask(task)
+
         return RestResponseFactory.noPayload(200)
     }
 

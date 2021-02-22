@@ -1,6 +1,6 @@
 package com.example.pgr301_devops.repository
 
-import com.example.pgr301_devops.data.Task
+import com.example.pgr301_devops.model.Task
 import javax.transaction.Transactional
 
 @Transactional

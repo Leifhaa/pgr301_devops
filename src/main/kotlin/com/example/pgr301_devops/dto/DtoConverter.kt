@@ -1,6 +1,6 @@
 package com.example.pgr301_devops.dto
 
-import com.example.pgr301_devops.data.Task
+import com.example.pgr301_devops.model.Task
 
 object DtoConverter {
 
