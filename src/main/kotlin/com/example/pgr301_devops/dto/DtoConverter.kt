@@ -13,6 +13,7 @@ object DtoConverter {
                 description = task.description,
                 user = task.user,
                 state = task.state,
+                price = task.price,
                 creationTime = task.creationTime
         )
     }

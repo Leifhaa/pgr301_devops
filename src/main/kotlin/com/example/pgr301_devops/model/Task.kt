@@ -26,7 +26,6 @@ class Task(
         @get:NotNull
         var state: TaskState? = TaskState.Created,
 
-        @get:NotNull
         var price: Double? = null,
 
         @get:NotNull

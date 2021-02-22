@@ -113,6 +113,8 @@ class TaskControllerTest {
                 .then()
                 .statusCode(204)
 
+        val allTasks = repository.count()
+        assertTrue(allTasks.equals(0L))
     }
 
 }
