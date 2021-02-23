@@ -7,6 +7,7 @@ import com.example.pgr301_devops.service.DatabaseInitializer
 import io.restassured.RestAssured
 import io.restassured.RestAssured.*
 import io.restassured.http.ContentType
+import org.hamcrest.Matchers
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
@@ -67,6 +68,7 @@ class TaskControllerTest {
                 .statusCode(201)
     }
 
+
     @Test
     fun testRunTask() {
         val dto = TaskDto(title = "foo", description = "bar", user = 0)
@@ -116,5 +118,24 @@ class TaskControllerTest {
         val allTasks = repository.count()
         assertTrue(allTasks.equals(0L))
     }
+
+    @Test
+    fun testGetAll() {
+        val dto = TaskDto(title = "foo", description = "bar", user = 0)
+        given().accept(ContentType.JSON)
+                .contentType(ContentType.JSON)
+                .body(dto)
+                .post()
+                .then()
+                .statusCode(201)
+
+        var response = given().accept(ContentType.JSON)
+                .get()
+                .then()
+                .statusCode(200)
+                .body("data.list.size()", Matchers.equalTo(1))
+    }
+
+
 
 }
