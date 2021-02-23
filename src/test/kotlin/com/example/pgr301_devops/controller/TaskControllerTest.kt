@@ -129,7 +129,7 @@ class TaskControllerTest {
                 .then()
                 .statusCode(201)
 
-        var response = given().accept(ContentType.JSON)
+        given().accept(ContentType.JSON)
                 .get()
                 .then()
                 .statusCode(200)
