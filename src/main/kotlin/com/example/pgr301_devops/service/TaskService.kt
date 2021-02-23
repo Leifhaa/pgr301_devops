@@ -10,6 +10,7 @@ import io.micrometer.core.instrument.Gauge
 import io.micrometer.core.instrument.MeterRegistry
 import org.springframework.scheduling.annotation.Async
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 import org.tsdes.advanced.rest.dto.PageDto
 import java.time.ZonedDateTime
 import java.util.*
@@ -18,6 +19,7 @@ import java.lang.instrument.Instrumentation;
 
 
 @Service
+@Transactional
 class TaskService (
         private val repository: TaskRepository,
         private val meterRegistry: MeterRegistry,
@@ -38,7 +40,6 @@ class TaskService (
 
     fun create(dto: TaskDto) : Task{
         val task = Task(title = dto.title!!, description = dto.description!!, user = dto.user, creationTime = ZonedDateTime.now())
-        meterRegistry.counter("tasks.current", "state", TaskState.Created.name).increment()
         repository.save(task)
         return task
     }
@@ -84,7 +85,7 @@ class TaskService (
         task.state = TaskState.Completed
 
         //Calculate the price for computation of the task (our business is charging per millisecond running a task)
-        val price = randTime * 0.00015
+        val price = randTime * 0.0015
         task.price = price
 
         //Save the money made into metrics
@@ -94,6 +95,5 @@ class TaskService (
         repository.save(task)
 
         running.decrementAndGet()
-        meterRegistry.counter("tasks.current", "state", TaskState.Completed.name).increment();
     }
 }
