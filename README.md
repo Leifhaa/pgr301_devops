@@ -72,16 +72,15 @@ How to build image:
 docker build . --tag helloworld --build-arg JAR_FILE=target/pgr301_devops-0.0.1-SNAPSHOT.jar
 
 
+
 how to run docker container:
 docker run -p 8081:8080 helloworld
 
 //Todo:
+- Draw how the project is using 3 different databases
 - Add a paging list according to enterprise lecture
 - Add travis test status in github readme.
-- Todo: Make my own metrics
 - Useful guide for making more benas for monitoring: https://dimitr.im/mastering-spring-boot-actuator#distribution-summaries
-- Make a counter of tasks opened
-- Make a counter of tasks completed
 - Get statuscake keys from google cloud secrets
 
 

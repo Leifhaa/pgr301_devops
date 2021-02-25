@@ -1,21 +1,28 @@
 package com.example.pgr301_devops.service
 
+import com.example.pgr301_devops.controller.TaskController
 import com.example.pgr301_devops.model.Task
 import com.example.pgr301_devops.model.TaskState
 import com.example.pgr301_devops.dto.DtoConverter
+import com.example.pgr301_devops.dto.InvoiceDto
 import com.example.pgr301_devops.dto.TaskDto
 import com.example.pgr301_devops.metrics.TaskDistributionSummary
 import com.example.pgr301_devops.repository.TaskRepository
 import io.micrometer.core.instrument.Gauge
 import io.micrometer.core.instrument.MeterRegistry
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import org.springframework.scheduling.annotation.Async
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import org.springframework.web.client.RestTemplate
 import org.tsdes.advanced.rest.dto.PageDto
+import java.lang.IllegalArgumentException
 import java.time.ZonedDateTime
 import java.util.*
 import java.util.concurrent.atomic.AtomicInteger
 import java.lang.instrument.Instrumentation;
+import java.net.URI
 
 
 @Service
@@ -25,6 +32,11 @@ class TaskService (
         private val meterRegistry: MeterRegistry,
         private val distributionSummary: TaskDistributionSummary)
 {
+
+    private val client: RestTemplate = RestTemplate()
+    var logger: Logger = LoggerFactory.getLogger(TaskController::class.java)
+
+
 
     /**
      * How many tasks is currently running
@@ -90,6 +102,19 @@ class TaskService (
 
         //Save the money made into metrics
         distributionSummary.StateDistributionSummary(meterRegistry).record(price)
+
+        //Send data to the invoicing service
+        val invoiceUrl : String? = System.getenv("INVOICE_URL")
+        if (invoiceUrl != null){
+            val invoiceDto = InvoiceDto(user=task.user, price = task.price)
+            val uri = URI(invoiceUrl)
+            client.postForEntity(uri, invoiceDto, InvoiceDto::class.java)
+            logger.info("Sent invoice to: " + invoiceUrl)
+        }
+        else{
+            logger.error("Failed to send invoice")
+            throw IllegalArgumentException("Missing invoice_url env variable")
+        }
 
 
         repository.save(task)
