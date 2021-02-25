@@ -19,6 +19,7 @@ import org.tsdes.advanced.rest.dto.PageDto
 import org.tsdes.advanced.rest.dto.RestResponseFactory
 import org.tsdes.advanced.rest.dto.WrappedResponse
 import java.net.URI
+import kotlin.math.log
 
 
 @Api(value="/api/tasks", description = "Handling incoming requests for tasks")
@@ -95,6 +96,8 @@ class TaskController(
         if (task.state == TaskState.Completed){
             return RestResponseFactory.userFailure("Task is completed")
         }
+
+        logger.info("Running task :" + id)
         service.runTask(task)
 
         return RestResponseFactory.noPayload(200)

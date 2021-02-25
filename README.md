@@ -82,6 +82,7 @@ docker run -p 8081:8080 helloworld
 - Add travis test status in github readme.
 - Useful guide for making more benas for monitoring: https://dimitr.im/mastering-spring-boot-actuator#distribution-summaries
 - Get statuscake keys from google cloud secrets
+- Add flyway
 
 
 
