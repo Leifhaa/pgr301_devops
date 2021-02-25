@@ -102,8 +102,8 @@ class TaskService (
         running.incrementAndGet()
 
         //Simulate a computation
-        val randTime = (5..15).random()
-        Thread.sleep( randTime.toLong() * 1000)
+        val randTime = (5..15).random() * 1000
+        Thread.sleep( randTime.toLong())
         task.state = TaskState.Completed
 
         //Calculate the price for computation of the task (our business is charging per millisecond running a task)
@@ -117,7 +117,7 @@ class TaskService (
         //Send data to the invoicing service
         val invoiceUrl : String? = System.getenv("INVOICE_URL")
         if (invoiceUrl != null){
-            val invoiceDto = InvoiceDto(user=task.user, price = task.price)
+            val invoiceDto = InvoiceDto(user=task.user, price = task.price, elapsed = randTime)
             val uri = URI(invoiceUrl)
             client.postForEntity(uri, invoiceDto, String::class.java)
             logger.info("Sent invoice to: " + invoiceUrl)

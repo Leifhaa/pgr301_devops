@@ -14,5 +14,9 @@ class InvoiceDto(
         var user: Long? = null,
 
         @get:NotNull
-        var price: Double? = null
+        var price: Double? = null,
+
+        @get:NotNull
+        var elapsed: Int? = null
+
 )
